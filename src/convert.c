@@ -63,7 +63,7 @@ char* ltoa(long number, char* string, int base)
         *string++ = '-';
     }
     
-    itoa(number, string, base);
+    ultoa(number, string, base);
     return old_string;
 }
 

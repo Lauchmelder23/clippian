@@ -12,6 +12,7 @@ void main()
     char buffer[1024];
 
     uart_init();
+    
     print_clippy();
     uart_puts("Boot successful! \n");
     uart_puts("Started execution at 0x");
