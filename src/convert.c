@@ -21,8 +21,14 @@ int stoi(const char* string)
     return output;
 }
 
-char* itoa(int number, char* string)
+char* ultoa(unsigned long number, char* string, int base)
 {
+    if(base < 2 || base > 16)
+    {
+        string[0] = '\0';
+        return string;
+    }
+
     volatile char* temp = (volatile char*)0x40000000;
     int i = 0;
     if(number == 0)
@@ -31,15 +37,10 @@ char* itoa(int number, char* string)
     }
     else
     {
-        for(int n = (number < 0 ? -number : number); n > 0; n /= 10)
+        for(; number > 0; number /= base)
         {
-            temp[i++] = '0' + (n % 10);
+            temp[i++] = '0' + (number % base);
         }
-    }
-
-    if(number < 0)
-    {
-        temp[i++] = '-';
     }
 
     temp[i] = '\0';
@@ -51,4 +52,27 @@ char* itoa(int number, char* string)
     }
 
     return string;
+}
+
+char* ltoa(long number, char* string, int base)
+{
+    char* old_string = string;
+    if(number < 0)
+    {
+        number *= -1;
+        *string++ = '-';
+    }
+    
+    itoa(number, string, base);
+    return old_string;
+}
+
+char* utoa(unsigned int number, char* string, int base)
+{
+    return ultoa(number, string, base);
+}
+
+char* itoa(int number, char* string, int base)
+{
+     return ltoa(number, string, base);
 }
