@@ -22,18 +22,6 @@ void main()
     char buffer[1024];
     for(;;)
     {
-        /*
-        uart_puts("\n\n📎 ");
-        int a = stoi(uart_gets(buffer));
-        int b = -a;
-
-        uart_puts("a: ");
-        uart_puts(itoa(a, buffer));
-        uart_puts("\nb: ");
-        uart_puts(itoa(b, buffer));
-        */
-        
-        
         uart_puts("\n\nPlease enter first operand\n");
         uart_puts("📎 "); 
         int a = stoi(uart_gets(buffer));
@@ -48,12 +36,7 @@ void main()
         uart_puts(itoa(b, buffer));
         uart_puts(" = ");
         uart_puts(itoa(a * b, buffer));
-        
-
-        // uart_puts(buffer);
     }
-
-    __asm("hlt");
 }
 
 void print_clippy()
