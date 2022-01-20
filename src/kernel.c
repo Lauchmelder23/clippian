@@ -1,6 +1,7 @@
 #include "io.h"
 #include "convert.h"
 #include "string.h"
+#include "memory.h"
 
 void print_clippy();
 char* get_user_input(char* buffer);
@@ -12,7 +13,8 @@ void main()
     char buffer[1024];
 
     uart_init();
-    
+    heap_init();
+
     print_clippy();
     uart_puts("Boot successful! \n");
     uart_puts("Started execution at 0x");

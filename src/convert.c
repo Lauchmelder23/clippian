@@ -1,5 +1,6 @@
 #include "convert.h"
 #include "io.h"
+#include "memory.h"
 
 int stoi(const char* string)
 {
@@ -29,7 +30,9 @@ char* ultoa(unsigned long number, char* string, int base)
         return string;
     }
 
-    volatile char* temp = (volatile char*)0x40000000;
+    char* buffer = (char*)malloc();
+    char* temp = buffer;
+
     int i = 0;
     if(number == 0)
     {
@@ -39,7 +42,12 @@ char* ultoa(unsigned long number, char* string, int base)
     {
         for(; number > 0; number /= base)
         {
-            temp[i++] = '0' + (number % base);
+            uint8_t digit = number % base;
+
+            if(digit < 10)
+                temp[i++] = '0' + digit;
+            else
+                temp[i++] = 'A' + digit;
         }
     }
 
@@ -51,6 +59,7 @@ char* ultoa(unsigned long number, char* string, int base)
         string[--i] = *temp++;
     }
 
+    free(buffer);
     return string;
 }
 

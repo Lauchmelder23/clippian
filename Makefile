@@ -3,7 +3,7 @@ GCCPATH = /opt/gcc-arm/bin
 CC 			= $(GCCPATH)/aarch64-none-elf-gcc
 LD 			= $(GCCPATH)/aarch64-none-elf-ld
 OBJCOPY 	= $(GCCPATH)/aarch64-none-elf-objcopy
-GCCFLAGS 	= -Wall -O2 -ffreestanding -nostdinc -nostdlib -nostartfiles
+GCCFLAGS 	= -Wall -O2 -ffreestanding -fno-builtin -nostdinc -nostdlib -nostartfiles 
 
 OUTDIR = ./out/bin
 
