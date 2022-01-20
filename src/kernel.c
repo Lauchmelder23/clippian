@@ -1,5 +1,6 @@
 #include "io.h"
 #include "convert.h"
+#include "string.h"
 
 void print_clippy();
 
@@ -24,19 +25,19 @@ void main()
     {
         uart_puts("\n\nPlease enter first operand\n");
         uart_puts("📎 "); 
-        int a = stoi(uart_gets(buffer));
-
-        uart_puts("\nPlease enter second operand\n");
-        uart_puts("📎 "); 
         uart_gets(buffer);
-
-        if(buffer == "clippy")
+        
+        if(!strcmp(buffer, "clippy"))
         {
             print_clippy();
             continue;
         }
 
-        int b = stoi(buffer);
+        int a = stoi(buffer);
+
+        uart_puts("\nPlease enter second operand\n");
+        uart_puts("📎 "); 
+        int b = stoi(uart_gets(buffer));
 
         uart_puts("\n");
         uart_puts(itoa(a, buffer));
