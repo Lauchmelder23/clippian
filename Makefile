@@ -14,15 +14,20 @@ OFILES = $(_OFILES:src/%=out/%)
 
 all: clean kernel8.img
 
+out/boot.o: src/boot.S
+	@echo "Building $@"
+	@mkdir -p $(@D)
+	@$(CC) -c $< -o $@ $(GCCLFAGS)
+
 out/%.o: src/%.c $(HFILES)
 	@echo "Building $@"
 	@mkdir -p $(@D)
 	@$(CC) -Iinclude -c $< -o $@ $(GCCLFAGS)
 
-kernel8.img: $(OFILES)
+kernel8.img: out/boot.o $(OFILES)
 	@echo "Linking kernel"
 	@mkdir -p bin
-	@$(LD) -nostdlib $(OFILES) -T link.ld -o out/kernel8.elf
+	@$(LD) -nostdlib out/boot.o $(OFILES) -T link.ld -o out/kernel8.elf
 	@$(OBJCOPY) -O binary out/kernel8.elf bin/kernel8.img
 	@echo "Done!"
 

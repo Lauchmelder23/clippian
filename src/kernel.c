@@ -27,7 +27,7 @@ void main()
         int a = stoi(uart_gets(buffer));
 
         uart_puts("\nPlease enter second operand\n");
-        uart_puts("📎> "); 
+        uart_puts("📎 "); 
         uart_gets(buffer);
 
         if(buffer == "clippy")
