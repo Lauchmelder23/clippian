@@ -28,7 +28,15 @@ void main()
 
         uart_puts("\nPlease enter second operand\n");
         uart_puts("📎> "); 
-        int b = stoi(uart_gets(buffer));
+        uart_gets(buffer);
+
+        if(buffer == "clippy")
+        {
+            print_clippy();
+            continue;
+        }
+
+        int b = stoi(buffer);
 
         uart_puts("\n");
         uart_puts(itoa(a, buffer));
