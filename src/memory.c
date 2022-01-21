@@ -15,14 +15,12 @@ struct Block
     void* data;
 };
 
-#define HEAP_BASE ((void*)0x40000000)
-#define BLOCK_SIZE 4096
-#define MAGIC_NUMBER 0xDEADBEEF
-
-static struct FreeBlock* head = (struct FreeBlock*)HEAP_BASE;
+extern const void* __heap_base;
+static struct FreeBlock* head = NULL;
 
 void heap_init()
 {
+    head = (struct FreeBlock*)__heap_base;
     head->next = head + sizeof(struct FreeBlock);
     head->size = 0;
 

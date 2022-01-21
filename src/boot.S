@@ -24,8 +24,5 @@ _start:
     cbnz    w2, 3b
 
 4:  # Jump to main() in C
-    ldr     x0, =_start
-    ldr     x1, =0x50000
-    str     x0, [x1]
     bl      main
     b       1b

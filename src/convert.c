@@ -47,7 +47,7 @@ char* ultoa(unsigned long number, char* string, int base)
             if(digit < 10)
                 temp[i++] = '0' + digit;
             else
-                temp[i++] = 'A' + digit;
+                temp[i++] = 'A' + digit - 10;
         }
     }
 

@@ -8,8 +8,7 @@ char* get_user_input(char* buffer);
 
 void main()
 {
-    const char* hex_chars = "0123456789ABCDEF";
-    long int start = *(volatile long int*)0x50000;
+    extern long _start;
     char buffer[1024];
 
     uart_init();
@@ -18,7 +17,7 @@ void main()
     print_clippy();
     uart_puts("Boot successful! \n");
     uart_puts("Started execution at 0x");
-    uart_puts(ultoa(start, buffer, 16));
+    uart_puts(ultoa((long)&_start, buffer, 16));
 
     for(;;)
     {

@@ -12,6 +12,7 @@ SECTIONS
         *(COMMON)
         __bss_end = .;
     }
+    __heap_base = .;
     _end = .;
 
     /DISCARD/ : { *(.comment) *(.gnu*) *(.note*) *(.eh_frame*) }
