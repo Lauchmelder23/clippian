@@ -1,10 +1,8 @@
 #pragma once
 
-#include "stdint.h"
-
 #define NULL ((void*)0)
 
 void heap_init();
 
-void* malloc(size_t size);
+void* malloc();
 void free(void* ptr);

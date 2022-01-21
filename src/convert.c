@@ -30,7 +30,7 @@ char* ultoa(unsigned long number, char* string, int base)
         return string;
     }
 
-    char* buffer = (char*)malloc(1024);
+    char* buffer = (char*)malloc();
     char* temp = buffer;
 
     int i = 0;
