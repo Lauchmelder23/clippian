@@ -1,12 +1,18 @@
 #include "memory.h"
 
-#include "stdint.h"
 #include "io.h"
 #include "convert.h"
 
 struct FreeBlock
 {
+    size_t size;
     struct FreeBlock* next;
+};
+
+struct Block
+{
+    size_t size;
+    void* data;
 };
 
 #define HEAP_BASE ((void*)0x40000000)
@@ -17,54 +23,60 @@ static struct FreeBlock* head = (struct FreeBlock*)HEAP_BASE;
 
 void heap_init()
 {
-    head->next = NULL;
+    head->next = head + sizeof(struct FreeBlock);
+    head->size = 0;
+
+    head->next->next = NULL;
+    head->next->size = -1;
 }
 
-void* malloc()
+struct FreeBlock* find_free_block(struct FreeBlock** previous, size_t min_size)
 {
-    void* block = (void*)head;
-
-    if(head->next == NULL)
+    struct FreeBlock* block = head;
+    while(block && min_size < block->size)
     {
-        head += BLOCK_SIZE;
-        head->next = NULL;
+        *previous = block;
+        block = block->next;
+    }
+
+    return block;
+}
+
+void* malloc(size_t size)
+{
+    size_t physicalSize = size + sizeof(size_t);
+    struct Block* allocation = NULL;
+
+    struct FreeBlock* previous = head;
+    struct FreeBlock* block = find_free_block(&previous, physicalSize);
+
+    allocation = (struct Block*)block;
+    allocation->size = size;
+
+    if(block->size == physicalSize)
+    {
+        previous->next = block->next;
     }
     else
     {
-        head = head->next;
+        struct FreeBlock* shrunkBlock = block + physicalSize;
+        shrunkBlock->next = block->next;
+        shrunkBlock->size = shrunkBlock->next - shrunkBlock;
+
+        previous->next = shrunkBlock;
     }
 
-    *(uint32_t*)block = MAGIC_NUMBER;
-    return block + sizeof(uint32_t);
+    return &(allocation->data);
 }
 
 void free(void* ptr)
 {
-    void* blockStart = ptr - sizeof(uint32_t);
-    if(*(uint32_t*)blockStart != MAGIC_NUMBER)
-        return;
+    struct FreeBlock* block = (struct FreeBlock*)((size_t*)ptr - 1);
+    
+    struct FreeBlock* previous = head;
+    while(previous && (void*)previous->next < ptr)
+        previous = previous->next; 
 
-    if((struct FreeBlock*)blockStart < head)
-    {
-        struct FreeBlock* nextBlock = head->next;
-        head = blockStart;
-        head->next = nextBlock;
-        return;
-    }
-
-    struct FreeBlock* block = head;
-
-    while(block)
-    {
-        if(block < (struct FreeBlock*)blockStart && (struct FreeBlock*)blockStart < block->next)
-        {
-            struct FreeBlock* newBlock = (struct FreeBlock*)blockStart;
-            newBlock->next = block->next;
-            block->next = newBlock;
-
-            return;
-        }
-
-        block = block->next;
-    }
+    previous->next = block;
+    block->next = previous;
 }
