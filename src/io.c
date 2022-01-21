@@ -28,7 +28,7 @@ void uart_init()
     poke(AUX_MU_MCR_REG, 0);    // Pull RTS high
     poke(AUX_MU_IER_REG, 0);
     poke(AUX_MU_IIR_REG, 0xC6); // Disable interrupts
-    poke(AUX_MU_BAUD_REG, AUX_UART_CLOCK / (112500 * 8) - 1);
+    poke(AUX_MU_BAUD_REG, AUX_UART_CLOCK / (115200 * 8) - 1);
     gpio_setAltMode5(14);
     gpio_setAltMode5(15);
     poke(AUX_MU_CNTL_REG, 3);
