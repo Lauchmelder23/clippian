@@ -2,6 +2,7 @@
 #include "convert.h"
 #include "string.h"
 #include "memory.h"
+#include "mb.h"
 
 void print_clippy();
 char* get_user_input(char* buffer);
@@ -10,12 +11,28 @@ void main()
 {
     extern long _start;
     char buffer[1024];
+    uint8_t mac_address[6];
 
     uart_init();
     heap_init();
 
     print_clippy();
     uart_puts("Boot successful! \n");
+
+    uart_puts("Firmware revision: ");
+    uart_puts(utoa(get_vc_firmware_rev(), buffer, 10));
+
+    get_board_mac_address(mac_address);
+    uart_puts("\nMAC Address: ");
+    for(uint8_t i = 0; i < 6; i++)
+    {
+        uart_puts(utoa(mac_address[i], buffer, 16));
+        if(i != 5)
+            uart_puts(":");
+    }
+    uart_puts("\n");
+    
+    uart_puts("\n");
     uart_puts("Started execution at 0x");
     uart_puts(ultoa((long)&_start, buffer, 16));
 

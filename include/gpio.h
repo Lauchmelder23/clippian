@@ -1,5 +1,10 @@
 #include "stdint.h"
 
+enum
+{
+    PERIPHERAL_BASE = 0xFE000000
+};
+
 // Functions for peeking/poking into memory
 void     poke(int64_t addr, uint32_t val);
 uint32_t peek(int64_t addr);
