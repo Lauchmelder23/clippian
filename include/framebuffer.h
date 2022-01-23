@@ -28,3 +28,4 @@ struct FrameBuffer* framebuffer_init(unsigned int width, unsigned int height);
 void framebuffer_release(void);
 
 void draw_test_image(void);
+void draw_clippy(unsigned int x, unsigned int y);

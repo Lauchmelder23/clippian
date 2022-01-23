@@ -48,6 +48,7 @@ void main()
     uart_puts("Size              : ");  uart_puts(utoa(framebuffer->size, buffer, 10)); uart_puts(" bytes\n\n");
 
     draw_test_image();
+    draw_clippy(100, 100);
 
     for(;;)
     {
