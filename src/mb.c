@@ -3,6 +3,7 @@
 #include "memory.h"
 #include "io.h"
 #include "convert.h"
+#include "framebuffer.h"
 
 volatile uint32_t __attribute__((aligned(16))) mailbox[36];
 
@@ -118,4 +119,75 @@ uint8_t* get_board_mac_address(uint8_t* buffer)
         buffer[i] = mac_address[i];
 
     return buffer;
+}
+
+void create_framebuffer(struct FrameBuffer* buffer, unsigned int width, unsigned int height)
+{
+    mailbox[0] = 35 * sizeof(uint32_t);  // buffer size
+    mailbox[1] = 0;
+
+    // Set physical display dimensions
+    mailbox[2] = 0x00048003;
+    mailbox[3] = 2 * sizeof(uint32_t);
+    mailbox[4] = 0;
+    mailbox[5] = width;
+    mailbox[6] = height;
+
+    // Set virtual display dimensions
+    mailbox[7] = 0x00048004;
+    mailbox[8] = 2 * sizeof(uint32_t);
+    mailbox[9] = 0;
+    mailbox[10] = width;
+    mailbox[11] = height;
+
+    // Set bit depth
+    mailbox[12] = 0x00048005;
+    mailbox[13] = 1 * sizeof(uint32_t);
+    mailbox[14] = 0;
+    mailbox[15] = 32;
+
+    // Set pixel order
+    mailbox[16] = 0x00048006;
+    mailbox[17] = 1 * sizeof(uint32_t);
+    mailbox[18] = 0;
+    mailbox[19] = 1;
+
+    // Set virtual offset
+    mailbox[20] = 0x00048009;
+    mailbox[21] = 2 * sizeof(uint32_t);
+    mailbox[22] = 0;
+    mailbox[23] = 0;
+    mailbox[24] = 0;
+
+    // Allocate buffer
+    mailbox[25] = 0x00040001;
+    mailbox[26] = 8;
+    mailbox[27] = 0;
+    mailbox[28] = 4096; 
+    mailbox[29] = 0;
+
+    // Get pitch
+    mailbox[30] = 0x00040008;
+    mailbox[31] = 1 * sizeof(uint32_t);
+    mailbox[32] = 0;
+    mailbox[33] = 0;
+
+    mailbox[34] = 0;
+
+    mailbox_call(8);
+
+    mailbox[28] &= 0x3FFFFFFF;
+
+    buffer->physicalDisplay.width = mailbox[5];
+    buffer->physicalDisplay.height = mailbox[6];
+
+    buffer->virtualDisplay.width = mailbox[10];
+    buffer->virtualDisplay.height = mailbox[11];
+    buffer->virtualDisplay.xOffset = mailbox[23];
+    buffer->virtualDisplay.yOffset = mailbox[24];
+
+    buffer->bitsPerPixel = mailbox[15];
+    buffer->pitch = mailbox[33];
+    buffer->pixels = (uint8_t*)((uint64_t)mailbox[28]);
+    buffer->size = mailbox[29];
 }

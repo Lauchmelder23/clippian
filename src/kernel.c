@@ -3,6 +3,7 @@
 #include "string.h"
 #include "memory.h"
 #include "mb.h"
+#include "framebuffer.h"
 
 void print_clippy();
 char* get_user_input(char* buffer);
@@ -35,6 +36,18 @@ void main()
     uart_puts("\n");
     uart_puts("Started execution at 0x");
     uart_puts(ultoa((long)&_start, buffer, 16));
+
+    struct FrameBuffer* framebuffer = framebuffer_init(1920, 1080);
+    uart_puts("\n\nFramebuffer info\n---------------\n");
+    uart_puts("Physical display  : ");  uart_puts(utoa(framebuffer->physicalDisplay.width, buffer, 10));    uart_puts("x"); uart_puts(utoa(framebuffer->physicalDisplay.height, buffer, 10));  uart_puts(" pixels\n");
+    uart_puts("Virtual display   : ");  uart_puts(utoa(framebuffer->virtualDisplay.width, buffer, 10));    uart_puts("x"); uart_puts(utoa(framebuffer->virtualDisplay.height, buffer, 10));  uart_puts(" pixels\n");
+    uart_puts("Virt. disp. offset: ("); uart_puts(utoa(framebuffer->virtualDisplay.xOffset, buffer, 10));    uart_puts(","); uart_puts(utoa(framebuffer->virtualDisplay.yOffset, buffer, 10));  uart_puts(")\n");
+    uart_puts("Pitch:            : ");  uart_puts(utoa(framebuffer->pitch, buffer, 10));    uart_puts(" bytes\n");
+    uart_puts("Bit depth         : ");  uart_puts(utoa(framebuffer->bitsPerPixel, buffer, 10)); uart_puts(" bits per pixel\n");
+    uart_puts("Memory location   : 0x");  uart_puts(ultoa((unsigned long)framebuffer->pixels, buffer, 16));   uart_puts("\n");
+    uart_puts("Size              : ");  uart_puts(utoa(framebuffer->size, buffer, 10)); uart_puts(" bytes\n\n");
+
+    draw_test_image();
 
     for(;;)
     {
